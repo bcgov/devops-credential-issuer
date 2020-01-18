@@ -148,7 +148,7 @@ configureEnvironment() {
   done
 
   # Global
-  export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-identity-kit}"
+  export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-bcdevops-issuer}"
   export S2I_SCRIPTS_PATH=${S2I_SCRIPTS_PATH:-/usr/libexec/s2i}
   export DEBUG=${DEBUG}
 

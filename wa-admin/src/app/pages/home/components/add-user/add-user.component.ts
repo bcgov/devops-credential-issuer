@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ActionService } from 'src/app/services/action.service';
-import { StateService } from 'src/app/services/state.service';
-import { LoadingService } from 'src/app/services/loading.service';
-import { environment } from 'src/environments/environment';
-import { IInvitationRecord } from 'src/app/shared/interfaces/invitation-record.interface';
-import { AlertService } from 'src/app/services/alert.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ActionService } from 'src/app/services/action.service';
+import { AlertService } from 'src/app/services/alert.service';
+import { StateService } from 'src/app/services/state.service';
+import { AppConfigService } from 'src/app/services/app-config.service';
 
-const url = 'https://identity-kit.pathfinder.gov.bc.ca/';
+const url = AppConfigService.settings.publicSite.url;
 
 @Component({
   selector: 'waa-add-user',
@@ -39,7 +37,8 @@ const url = 'https://identity-kit.pathfinder.gov.bc.ca/';
               </ion-text></ion-note
             >
           </ion-item>
-          <ion-item>
+
+          <!-- <ion-item>
             <ion-label position="stacked">First Name</ion-label>
             <ion-input
               formControlName="firstName"
@@ -48,6 +47,7 @@ const url = 'https://identity-kit.pathfinder.gov.bc.ca/';
             >
             </ion-input>
           </ion-item>
+
           <ion-item>
             <ion-label position="stacked">Last Name</ion-label>
             <ion-input
@@ -56,61 +56,7 @@ const url = 'https://identity-kit.pathfinder.gov.bc.ca/';
               (keyup.enter)="submit(fg)"
             >
             </ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="stacked"
-              >Jurisdiction <ion-text color="danger">*</ion-text></ion-label
-            >
-            <!-- in case i use a select in future
-            <ion-select
-              required
-              interface="popover"
-              formControlName="jurisdiction"
-              placeholder="Select a jurisdiction"
-            >
-              <ion-select-option>BC</ion-select-option>
-            </ion-select>
-            -->
-            <ion-radio-group no-padding formControlName="jurisdiction">
-              <ion-item lines="none">
-                <ion-radio value="BC" slot="start"></ion-radio>
-                <ion-label>BC</ion-label>
-              </ion-item>
-            </ion-radio-group>
-            <ion-note
-              *ngIf="
-                (invalid && fg['controls'].jurisdiction.invalid) ||
-                (fg['controls'].jurisdiction.touched &&
-                  fg['controls'].jurisdiction.invalid)
-              "
-            >
-              <ion-text color="danger"
-                >Invalid jurisdiction
-              </ion-text></ion-note
-            >
-          </ion-item>
-          <ion-item>
-            <ion-label position="stacked"
-              >Authentication <ion-text color="danger">*</ion-text></ion-label
-            >
-            <ion-radio-group no-padding formControlName="method">
-              <ion-item lines="none">
-                <ion-radio value="github" slot="start"></ion-radio>
-                <ion-icon name="logo-github"></ion-icon>
-              </ion-item>
-            </ion-radio-group>
-            <ion-note
-              *ngIf="
-                (invalid && fg['controls'].method.invalid) ||
-                (fg['controls'].method.touched && fg['controls'].method.invalid)
-              "
-            >
-              <ion-text color="danger"
-                >Invalid authentication
-              </ion-text></ion-note
-            >
-          </ion-item>
+          </ion-item> -->
         </mat-card>
         <ion-footer>
           <ion-toolbar color="secondary">
@@ -163,14 +109,6 @@ export class AddUserComponent implements OnInit {
     expiry.setDate(created.getDate() + 1);
     return [
       {
-        key: 'method',
-        value: this.fg.value['method']
-      },
-      {
-        key: 'jurisdiction',
-        value: this.fg.value['jurisdiction']
-      },
-      {
         key: 'expiry',
         value: expiry
       },
@@ -188,7 +126,6 @@ export class AddUserComponent implements OnInit {
   constructor(
     private actionSvc: ActionService,
     private stateSvc: StateService,
-    private loadingSvc: LoadingService,
     private alertSvc: AlertService,
     private router: Router
   ) {
@@ -205,11 +142,8 @@ export class AddUserComponent implements OnInit {
 
       email: new FormControl('', [
         Validators.required,
-        Validators.minLength(4),
         Validators.email
-      ]),
-      method: new FormControl('github', [Validators.required]),
-      jurisdiction: new FormControl('BC', Validators.required)
+      ])
     });
   }
 
@@ -221,38 +155,39 @@ export class AddUserComponent implements OnInit {
       return (this.fg = fg);
     }
 
-    const { method, jurisdiction, email, firstName, lastName } = this.fg.value;
+    const { email, firstName, lastName } = this.fg.value;
     if (this.index === 0) {
       this.index = 1;
     } else {
       const addedBy = this.stateSvc.user.username;
       try {
-      const response = await this.actionSvc
-        .createInvitation({
-          method,
-          jurisdiction,
-          email,
-          firstName,
-          lastName,
-          addedBy
-        })
-        .toPromise();
-      const created = new Date();
-      const expiry = new Date();
-      expiry.setDate(created.getDate() + 1);
+        const response = await this.actionSvc
+          .createInvitation({
+            email,
+            firstName,
+            lastName,
+            addedBy
+          })
+          .toPromise();
+        const created = new Date();
+        const expiry = new Date();
+        expiry.setDate(created.getDate() + 1);
 
-      const res = await this.alertSvc.confirmBox({
-        header: 'Invitation Sent!',
-        message: 'Would you like to create another user?',
-        decline: 'Home',
-        confirm: 'Add another'
-      });
-      if (res) return this.resetState();
-      return this.router.navigate(['/']);
-    } catch(err) {
-      console.log(err)
-      this.alertSvc.error({header: 'An error occurred adding the user', message: err.error.error.message})
-    }
+        const res = await this.alertSvc.confirmBox({
+          header: 'Invitation Sent!',
+          message: 'Would you like to create another user?',
+          decline: 'Home',
+          confirm: 'Add another'
+        });
+        if (res) return this.resetState();
+        return this.router.navigate(['/']);
+      } catch (err) {
+        console.log(err);
+        this.alertSvc.error({
+          header: 'An error occurred adding the user',
+          message: err.error.error.message
+        });
+      }
     }
   }
 
