@@ -117,3 +117,7 @@ dist
 .vscode
 .idea/*
 .vs
+
+# Keycloak
+hsperfdata_jboss
+realm-export-docker.json
