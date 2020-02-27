@@ -261,21 +261,21 @@
       "displayName": "Name",
       "description": "The name assigned to all of the OpenShift resources associated to the server instance.",
       "required": true,
-      "value": "identity-kit-db"
+      "value": "devops-issuer-db"
     },
     {
       "name": "APP_NAME",
       "displayName": "App Name",
       "description": "Used to group components together in the OpenShift console.",
       "required": true,
-      "value": "identity-kit"
+      "value": "devops-issuer"
     },
     {
       "name": "APP_GROUP",
       "displayName": "App Group",
       "description": "The name assigned to all of the deployments in this project.",
       "required": true,
-      "value": "identity-kit"
+      "value": "devops-issuer"
     },
     {
       "name": "SUFFIX",
@@ -296,14 +296,14 @@
       "displayName": "Image Namespace",
       "required": true,
       "description": "The namespace of the OpenShift project containing the imagestream for the application.",
-      "value": "devex-von-tools"
+      "value": "admgjk-tools"
     },
     {
       "name": "SOURCE_IMAGE_NAME",
       "displayName": "Source Image Name",
       "description": "The name of the image to use for this resource.",
       "required": true,
-      "value": "identity-kit-db"
+      "value": "devops-issuer-db"
     },
     {
       "name": "TAG_NAME",
