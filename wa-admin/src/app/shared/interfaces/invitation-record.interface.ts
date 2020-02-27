@@ -1,7 +1,9 @@
 export interface IInvitationRecord {
   _id?: any;
   consumed: boolean;
+  method: string;
   email: string;
+  jurisdiction: string;
   expiry?: number;
   expired?: boolean;
   active: boolean;

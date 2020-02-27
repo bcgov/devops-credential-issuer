@@ -8,11 +8,7 @@ import { LoadingController } from '@ionic/angular';
 @Component({
   selector: 'wap-request-token',
   template: `
-    <ion-header>
-      <ion-toolbar color="primary">
-        <ion-title>Request Token</ion-title>
-      </ion-toolbar>
-    </ion-header>
+    <wap-header title="Request Token"></wap-header>
     <wap-view-wrapper>
       <mat-card>
         <mat-card-header class="main-header" *ngIf="!sent; else isSent">
@@ -66,7 +62,7 @@ export class RequestTokenComponent implements OnInit {
     private loadingCtrl: LoadingController,
     private stateSvc: StateService,
   ) {
-    const email = this.stateSvc.email || '';
+    const email = this.stateSvc.invitedUser.email || '';
     const fc = new FormControl(email, [Validators.required, Validators.email]);
     this.fc = fc;
   }

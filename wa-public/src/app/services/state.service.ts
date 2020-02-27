@@ -1,20 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
-
-const apiUrl = '/api/';
-
-export interface IUser extends Keycloak.KeycloakProfile {
-  _id?: string;
-  guid?: string;
-}
+import { AppConfigService } from './app-config.service';
 
 export interface IValidateLink {
   _id: string;
   expired: boolean;
   active: boolean;
-  email?: string;
+  user?: {
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
 }
 
 @Injectable({
@@ -23,6 +20,8 @@ export interface IValidateLink {
 export class StateService {
   private _isAuth = false;
   private _title = 'Identity Kit POC';
+  private _apiUrl: string;
+  userIdToken: any;
 
   get linkId() {
     return localStorage.getItem('linkId');
@@ -36,15 +35,16 @@ export class StateService {
     localStorage.setItem('id', id);
   }
 
-  get email(): string {
-    return localStorage.getItem('email') || ''
+  set invitedUser(user: any) {
+    localStorage.setItem('invitedUser', JSON.stringify(user));
   }
 
-  user: IUser = {};
-  private _apiUrl: string;
+  get invitedUser() {
+    return JSON.parse(localStorage.getItem('invitedUser'));
+  }
 
   isValidToken(token: string): Observable<IValidateLink> {
-    const url = `${this._apiUrl}invitations/${token}/validate`;
+    const url = `${this._apiUrl}/invitations/${token}/validate`;
     localStorage.setItem('linkId', token);
     return this.http.get<IValidateLink>(url);
   }
@@ -57,7 +57,7 @@ export class StateService {
     return this._title;
   }
 
-  constructor (private http: HttpClient) {
-    this._apiUrl = apiUrl;
+  constructor(private http: HttpClient) {
+    this._apiUrl = AppConfigService.settings.apiServer.url;
   }
 }

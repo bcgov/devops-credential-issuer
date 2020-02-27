@@ -1,18 +1,15 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
-import { StateService } from './state.service';
-import { environment } from 'src/environments/environment';
-import { HttpClient } from '@angular/common/http';
 import { IInvitationRecord } from '../interfaces/invitation-record';
-import { Router } from '@angular/router';
-
-const apiUrl = '/api/';
+import { AppConfigService } from './app-config.service';
+import { StateService, IValidateLink } from './state.service';
 
 export interface IInvitation {
   connection_id: string;
   invitation: Invitation;
   invitation_url: string;
-  base: string;
+  base64: string;
 }
 export interface Invitation {
   '@type': string;
@@ -41,7 +38,6 @@ export interface IssueCredential {
 }
 export interface Claims {
   userdisplayname: string;
-  email: string;
   surname: string;
   givenname: string;
   birthdate: string;
@@ -99,22 +95,15 @@ export interface KeyCorrectnessProof {
 })
 export class ActionService {
   _apiUrl: string;
-  authenticate() {
-    // TODO: @ES some authentication logic here
-  }
-
-  set email(addr: string) {
-    localStorage.setItem('email', addr);
-  }
 
   constructor(
     private keyCloakSvc: KeycloakService,
     private stateSvc: StateService,
     private http: HttpClient,
-    private router: Router,
   ) {
-    this._apiUrl = apiUrl;
-    this.keyCloakSvc.loadUserProfile().then((res: Keycloak.KeycloakProfile) => (this.stateSvc.user = res));
+    this._apiUrl = AppConfigService.settings.apiServer.url;
+    this.stateSvc.userIdToken = this.keyCloakSvc.getKeycloakInstance().idTokenParsed;
+    console.log('*****IDTOKEN: ', this.stateSvc.userIdToken);
   }
 
   async logout(uri?: string) {
@@ -122,24 +111,28 @@ export class ActionService {
   }
 
   getInvitation() {
-    return this.http.get<IInvitation>(`${this._apiUrl}connections`);
+    return this.http.get<IInvitation>(`${this._apiUrl}/connections`);
   }
 
   getConnectionState(id: string) {
-    return this.http.get<IConnectionResponse>(`${this._apiUrl}connections/${id}`);
+    return this.http.get<IConnectionResponse>(
+      `${this._apiUrl}/connections/${id}`,
+    );
   }
 
   issueCredentials(data: IssueCredential) {
-    console.log('issue data', data);
-    return this.http.post<IssueResponse>(`${this._apiUrl}issues/`, data);
+    console.log('Credential data: ', data);
+    return this.http.post<IssueResponse>(`${this._apiUrl}/issues/`, data);
   }
 
   getCredentialById(id: string) {
-    return this.http.get<IInvitationRecord>(`${this._apiUrl}issues/${id}`);
+    return this.http.get<IInvitationRecord>(`${this._apiUrl}/issues/${id}`);
   }
 
   requestRenewal(args: { email: string; id: string }) {
     const { email, id } = args;
-    return this.http.post<any>(`${this._apiUrl}invitations/${id}/request`, { email });
+    return this.http.post<any>(`${this._apiUrl}/invitations/${id}/request`, {
+      email,
+    });
   }
 }

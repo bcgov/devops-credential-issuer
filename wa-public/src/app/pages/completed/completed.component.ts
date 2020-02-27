@@ -1,15 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { of } from 'rxjs';
 import { StateService } from 'src/app/services/state.service';
+import { AppConfigService } from 'src/app/services/app-config.service';
 
 @Component({
   selector: 'wap-completed',
   template: `
-    <ion-header *ngIf="$title | async as title">
-      <ion-toolbar color="primary">
-        <ion-title> {{ title }}</ion-title>
-      </ion-toolbar>
-    </ion-header>
+    <wap-header></wap-header>
     <wap-view-wrapper>
       <mat-card>
         <mat-card-header>
@@ -25,7 +22,7 @@ import { StateService } from 'src/app/services/state.service';
           <br />
           <p></p>
           <p>
-            To try out your new verified person credential please go to this <a [href]="pocLink">demo site</a>
+            To try out your new verified person credential please <a [href]="pocLink">click here</a>.
           </p></mat-card-content
         >
       </mat-card>
@@ -34,11 +31,10 @@ import { StateService } from 'src/app/services/state.service';
   styleUrls: ['./completed.component.scss'],
 })
 export class CompletedComponent implements OnInit {
-  $title = of('Identity Kit POC');
   pocLink: string;
 
   constructor(private stateSvc: StateService) {
-    this.pocLink = `https://law-society-demo.pathfinder.gov.bc.ca/`;
+    this.pocLink = AppConfigService.settings.csbAudio.siteUrl;
   }
 
   ngOnInit() {}

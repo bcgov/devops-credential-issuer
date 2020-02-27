@@ -1,11 +1,8 @@
-import * as Router from 'koa-router';
 import { Context } from 'koa';
-import { IssueService, futureDate } from './issue.service';
+import * as Router from 'koa-router';
+import { wait } from '../../../core/utility';
 import { client } from '../../../index';
-import { wait } from '../../../core/utility'
-
-const apiUrl = process.env.AGENT_ADMIN_URL;
-const issueSvc = new IssueService(apiUrl || 'http://identity-kit-agent');
+import { futureDate, IssueService } from './issue.service';
 
 export interface ICredentialPayload {
   claims: ICredentialClaims;
@@ -46,12 +43,11 @@ router.post('/', async (ctx: Context) => {
     'mime-type': 'text/plain',
   }));
 
-  console.log('start break');
-
+  console.debug('Giving the mobile agent a few seconds to catch-up with the request...');
   await wait(5000);
-  console.log('end break');
+
   try {
-    const res = await issueSvc.issueCredential({
+    const res = await new IssueService().issueCredential({
       connId: data.connectionId,
       attrs: mapped,
     });

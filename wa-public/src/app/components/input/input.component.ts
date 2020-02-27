@@ -12,7 +12,8 @@ import { FormControl } from '@angular/forms';
       <ion-input
         [formControl]="fc"
         (keyup.enter)="out.emit(true)"
-        [disabled]="disabled"
+        [readonly]="disabled"
+        class="input-field"
       >
       </ion-input>
     </ion-item>

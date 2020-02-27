@@ -1,52 +1,64 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { StateService, IUser } from 'src/app/services/state.service';
+import { StateService } from 'src/app/services/state.service';
 import { ActionService } from 'src/app/services/action.service';
-import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
+import {
+  FormGroup,
+  FormControl,
+  Validators,
+  AbstractControl,
+} from '@angular/forms';
 import { postalCodeValidator } from 'src/app/services/validators';
 import { Observable, of, interval, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { take, mergeMap, debounce, debounceTime } from 'rxjs/operators';
 import { TypeaheadService, ICPItem } from 'src/app/services/typeahead.service';
 import { CpRequest } from 'src/app/models/cp-request';
+import { AppConfigService } from 'src/app/services/app-config.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'wap-success',
   template: `
-    <ion-header *ngIf="$title | async as title">
-      <ion-toolbar color="primary">
-        <ion-title> {{ title }}</ion-title>
+    <wap-header title="Issue Verified Person Digital ID" [logoutUrl]="logoutUrl"></wap-header>
 
-        <ion-buttons slot="primary">
-          <ion-button (click)="logout()">
-            <ion-label>Logout</ion-label>
-            <ion-icon name="log-out"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
     <wap-view-wrapper *ngIf="hasId; else noIdHelper">
       <ion-grid *ngIf="index === 0">
         <ion-row>
+
           <ion-col>
             <mat-card class="form-card">
               <mat-card-header class="main-header">
-                <img mat-card-avatar src="assets/VON-Logo.png" alt="VON Network logo" class="header-image" />
-                <mat-card-title>BC Services Card</mat-card-title>
-                <mat-card-subtitle>Attributes from your card</mat-card-subtitle>
+                <img
+                  mat-card-avatar
+                  src="assets/VON-Logo.png"
+                  alt="VON Network logo"
+                  class="header-image"
+                />
+                <mat-card-title>Verified Person</mat-card-title>
+                <mat-card-subtitle
+                  >Attributes from the Identity Provider</mat-card-subtitle
+                >
               </mat-card-header>
-              <mat-card-content *ngIf="$previewData | async as previewData">
+              <mat-card-content *ngIf="$previewData | async as previewData" class="claim-data">
                 <wap-issue-preview [values]="previewData"></wap-issue-preview>
               </mat-card-content>
             </mat-card>
           </ion-col>
+
           <ion-col>
-            <mat-card class="form-card">
+            <mat-card  class="form-card">
               <mat-card-header class="main-header">
-                <img mat-card-avatar src="assets/VON-Logo.png" alt="VON Network logo" class="header-image" />
+                <img
+                  mat-card-avatar
+                  src="assets/VON-Logo.png"
+                  alt="VON Network logo"
+                  class="header-image"
+                />
                 <mat-card-title>Verified Claims Values</mat-card-title>
                 <mat-card-subtitle>Validate claims</mat-card-subtitle>
               </mat-card-header>
               <mat-card-content [formGroup]="fg">
+                <ion-list>
                 <wap-input
                   [fc]="fg.controls['firstName']"
                   placeholder="John"
@@ -54,9 +66,10 @@ import { CpRequest } from 'src/app/models/cp-request';
                   error="First name is required"
                   [invalid]="
                     (invalid && fg.controls['firstName'].invalid) ||
-                    (fg.controls['firstName'].touched && fg.controls['firstName'].invalid)
+                    (fg.controls['firstName'].touched &&
+                      fg.controls['firstName'].invalid)
                   "
-                  [disabled]="true"
+                  [disabled]="isProvidedValue('given_name')"
                 >
                 </wap-input>
                 <wap-input
@@ -66,21 +79,10 @@ import { CpRequest } from 'src/app/models/cp-request';
                   error="Last name is required"
                   [invalid]="
                     (invalid && fg.controls['lastName'].invalid) ||
-                    (fg.controls['lastName'].touched && fg.controls['lastName'].invalid)
+                    (fg.controls['lastName'].touched &&
+                      fg.controls['lastName'].invalid)
                   "
-                  [disabled]="true"
-                >
-                </wap-input>
-                <wap-input
-                  [fc]="fg.controls['emailAddress']"
-                  placeholder="email@example.com"
-                  label="Email"
-                  error="Email address is required"
-                  [invalid]="
-                    (invalid && fg.controls['emailAddress'].invalid) ||
-                    (fg.controls['emailAddress'].touched && fg.controls['emailAddress'].invalid)
-                  "
-                  [disabled]="true"
+                  [disabled]="isProvidedValue('family_name')"
                 >
                 </wap-input>
                 <wap-input
@@ -90,11 +92,16 @@ import { CpRequest } from 'src/app/models/cp-request';
                   error="Street address is required"
                   [invalid]="
                     (invalid && fg.controls['streetAddress'].invalid) ||
-                    (fg.controls['streetAddress'].touched && fg.controls['streetAddress'].invalid)
+                    (fg.controls['streetAddress'].touched &&
+                      fg.controls['streetAddress'].invalid)
                   "
+                  [disabled]="isProvidedValue('address.street_address')"
                 >
                 </wap-input>
-                <div class="mat-elevation-z4 address-list" *ngIf="typeAheadSvc.$addresses | async as addresses">
+                <div
+                  class="mat-elevation-z4 address-list"
+                  *ngIf="typeAheadSvc.$addresses | async as addresses"
+                >
                   <ion-list *ngIf="addresses.length > 0">
                     <ion-item
                       class="address-item"
@@ -102,7 +109,9 @@ import { CpRequest } from 'src/app/models/cp-request';
                       lines="none"
                       (click)="setAddress(item)"
                     >
-                      <ion-label> {{ item.Text }} - {{ item.Description }} </ion-label>
+                      <ion-label>
+                        {{ item.Text }} - {{ item.Description }}
+                      </ion-label>
                     </ion-item>
                   </ion-list>
                 </div>
@@ -114,8 +123,10 @@ import { CpRequest } from 'src/app/models/cp-request';
                   error="Postal code must be in the format of A1A1A1"
                   [invalid]="
                     (invalid && fg.controls['postalCode'].invalid) ||
-                    (fg.controls['postalCode'].touched && fg.controls['postalCode'].invalid)
+                    (fg.controls['postalCode'].touched &&
+                      fg.controls['postalCode'].invalid)
                   "
+                  [disabled]="isProvidedValue('address.postal_code')"
                 >
                 </wap-input>
                 <wap-input
@@ -125,26 +136,26 @@ import { CpRequest } from 'src/app/models/cp-request';
                   error="Locality is required"
                   [invalid]="
                     (invalid && fg.controls['locality'].invalid) ||
-                    (fg.controls['locality'].touched && fg.controls['locality'].invalid)
+                    (fg.controls['locality'].touched &&
+                      fg.controls['locality'].invalid)
                   "
+                  [disabled]="isProvidedValue('address.locality')"
                 >
                 </wap-input>
 
-                <ion-item lines="none">
-                  <ion-label position="stacked">Date of Birth <ion-text color="danger">*</ion-text></ion-label>
-                  <!--
-                    <ion-datetime
-                      formControlName="dateOfBirth"
-                      displayFormat="MMM DD YYYY"
-                      placeholder="MMM DD YYYY"
-                    ></ion-datetime>
-                    -->
-                  <mat-form-field appearance="none">
+                <ion-item
+                  lines="none"
+                >
+                  <ion-label position="stacked"
+                    >Date of Birth
+                    <ion-text color="danger">*</ion-text></ion-label
+                  >
+                  <mat-form-field appearance="none" class="date-form-field">
                     <input
-                      style="display: hidden;"
                       matInput
                       [matDatepicker]="picker"
-                      placeholder="MM/DD/YYYY"
+                      displayFormat="DD/MM/YYYY"
+                      placeholder="DD/MM/YYYY"
                       formControlName="dateOfBirth"
                       (onFocus)="dobFocus = true"
                       (onBlur)="dobFocus = false"
@@ -152,70 +163,117 @@ import { CpRequest } from 'src/app/models/cp-request';
                       (click)="dobFocus = true"
                       [min]="minDate"
                       [max]="maxDate"
+                      [readonly]="isProvidedValue('birthdate')"
                     />
-                    <mat-datepicker-toggle matSuffix [for]="picker"> </mat-datepicker-toggle>
-                    <mat-datepicker #picker startView="multi-year" [startAt]="startAt"></mat-datepicker>
+                    <mat-datepicker-toggle matSuffix [for]="picker" [disabled]="isProvidedValue('birthdate')">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker
+                      #picker
+                      startView="multi-year"
+                      [startAt]="startAt"
+                    ></mat-datepicker>
                   </mat-form-field>
                 </ion-item>
                 <div
                   class="dp-border"
-                  style="border-style: solid;"
                   [ngClass]="{
-                    'dp-border-warn': fg['controls'].dateOfBirth.touched && fg['controls'].dateOfBirth.invalid,
+                    'dp-border-warn':
+                      fg['controls'].dateOfBirth.touched &&
+                      fg['controls'].dateOfBirth.invalid,
                     'dp-border-grey': dobFocus === false,
-                    'dp-border-valid': dobFocus && fg['controls'].dateOfBirth.valid
+                    'dp-border-valid':
+                      dobFocus && fg['controls'].dateOfBirth.valid
                   }"
                 ></div>
                 <ion-note
                   *ngIf="
                     (invalid && fg['controls'].dateOfBirth.invalid) ||
-                    (fg['controls'].dateOfBirth.touched && fg['controls'].dateOfBirth.invalid)
+                    (fg['controls'].dateOfBirth.touched &&
+                      fg['controls'].dateOfBirth.invalid)
                   "
                 >
                   <ion-text color="danger"
-                    >Invalid date of birth. Date of birth must be in the format: MM/DD/YYYY
+                    >Invalid date of birth. Date of birth must be in the format:
+                    MM/DD/YYYY
                   </ion-text></ion-note
                 >
-                <ion-item lines="none">
-                  <ion-label
-                    ><ion-text class="ion-text-wrap">DISCLAIMER: lorem ipsum dolor sit amet...</ion-text></ion-label
-                  >
-                  <ion-checkbox slot="start" (click)="accepted = !accepted"></ion-checkbox>
-                </ion-item>
+                </ion-list>
               </mat-card-content>
-              <mat-card-actions>
-                <button mat-raised-button color="primary" [disabled]="true">
-                  Back
-                </button>
-                <button mat-raised-button color="primary" (click)="setIndex(index + 1)" [disabled]="formInvalid">
-                  Preview
-                </button>
-              </mat-card-actions>
             </mat-card>
           </ion-col>
         </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <mat-card>
+              <ion-card-content>
+                <ion-grid>
+                  <ion-row>
+                    <ion-col>
+                      <ion-item lines="none">
+                        <ion-label><ion-text class="ion-text-wrap">I certify that the above information is correct, and that I want to proceed.</ion-text></ion-label>
+                        <ion-checkbox
+                          slot="start"
+                          (click)="accepted = !accepted"
+                        ></ion-checkbox>
+                      </ion-item>
+                    </ion-col>
+                    <ion-col>
+                      <ion-button color="primary" (click)="setIndex(index + 1)" [disabled]="formInvalid" class="float-right">Preview</ion-button>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-card-content>
+            </mat-card>
+          </ion-col>
+        </ion-row>
+
       </ion-grid>
       <mat-card *ngIf="index === 1">
         <mat-card-header class="main-header">
-          <img mat-card-avatar src="assets/VON-Logo.png" alt="VON Network logo" class="header-image" />
+          <img
+            mat-card-avatar
+            src="assets/VON-Logo.png"
+            alt="VON Network logo"
+            class="header-image"
+          />
           <mat-card-title>{{ cardTitle }}</mat-card-title>
           <mat-card-subtitle>{{ cardSubtitle }}</mat-card-subtitle>
         </mat-card-header>
-        <mat-card-content class="qr-wrapper" *ngIf="$previewData | async as previewData"
-          ><wap-issue-preview [values]="previewData" position="xzzxx"></wap-issue-preview>
+        <mat-card-content
+          class="qr-wrapper"
+          *ngIf="$previewData | async as previewData"
+          ><wap-issue-preview
+            [values]="previewData"
+            position="xzzxx"
+          ></wap-issue-preview>
         </mat-card-content>
-        <mat-card-actions>
-          <button mat-raised-button color="primary" (click)="setIndex(index - 1)">
+        <mat-card-actions class="card-confirm-submission">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="setIndex(index - 1)"
+          >
             Back
           </button>
-          <button mat-raised-button color="primary" (click)="setIndex(index + 1)">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="setIndex(index + 1)"
+            class="float-right"
+          >
             Submit
           </button>
         </mat-card-actions>
       </mat-card>
       <mat-card *ngIf="index === 2">
         <mat-card-header class="main-header">
-          <img mat-card-avatar src="assets/VON-Logo.png" alt="VON Network logo" class="header-image" />
+          <img
+            mat-card-avatar
+            src="assets/VON-Logo.png"
+            alt="VON Network logo"
+            class="header-image"
+          />
           <mat-card-title>{{ cardTitle }}</mat-card-title>
           <mat-card-subtitle>{{ cardSubtitle }}</mat-card-subtitle>
         </mat-card-header>
@@ -229,7 +287,7 @@ import { CpRequest } from 'src/app/models/cp-request';
           <mat-card-content>
             <ion-item [href]="deeplink" lines="none" target="_blank">
               <ion-icon slot="start" name="log-out" color="dark"> </ion-icon>
-              <ion-label>Open in Street Cred app (iOS device only) </ion-label>
+              <ion-label>Open in a Trusted Digital Wallet</ion-label>
             </ion-item>
           </mat-card-content>
         </mat-card>
@@ -242,7 +300,8 @@ import { CpRequest } from 'src/app/models/cp-request';
             Please re-enter invitation link.
           </mat-card-title>
           <mat-card-content>
-            Your session has expired. Please re-enter the link from the POC Invitation email.
+            Your session has expired. Please re-enter the link from the POC
+            Invitation email.
           </mat-card-content>
         </mat-card>
       </wap-view-wrapper>
@@ -251,6 +310,8 @@ import { CpRequest } from 'src/app/models/cp-request';
   styleUrls: ['./success.component.scss'],
 })
 export class SuccessComponent implements OnInit, OnDestroy {
+  readonly logoutUrl: string = AppConfigService.settings.baseUrl;
+
   index = 0;
   hasId = true;
   accepted = false;
@@ -271,26 +332,49 @@ export class SuccessComponent implements OnInit, OnDestroy {
   addressVal = '';
   submitting: boolean;
 
+  constructor(
+    private stateSvc: StateService,
+    public actionSvc: ActionService,
+    private router: Router,
+    public typeAheadSvc: TypeaheadService,
+  ) {}
+
   get formInvalid() {
     return !this.accepted || this.fg.invalid;
   }
-  user: IUser;
+
+  user: any;
   fg: FormGroup;
-  $title: Observable<string>;
 
   subs: Subscription[] = [];
   $previewData: Observable<{ key: string; value: any; label: string }[]>;
   img: string;
   disableList: string[];
 
+  isProvidedValue(fieldName: string): boolean {
+    if (fieldName.startsWith('address')) {
+      return (
+        this.stateSvc.userIdToken.address[fieldName.split('.')[1]] !==
+          undefined &&
+        this.stateSvc.userIdToken.address[fieldName.split('.')[1]] !== ''
+      );
+    }
+    return (
+      this.stateSvc.userIdToken[fieldName] !== undefined &&
+      this.stateSvc.userIdToken[fieldName] !== ''
+    );
+  }
+
   setAddress(cpItem: ICPItem) {
     if (!cpItem.Description) return;
     const addressDetail = cpItem.Description.split(',');
     this.fg.controls.streetAddress.setValue(cpItem.Text);
     this.fg.controls.locality.setValue(addressDetail[0]);
-    this.fg.controls.postalCode.setValue(addressDetail[2].replace(/^[ \t]+/, ''));
+    this.fg.controls.postalCode.setValue(
+      addressDetail[2].replace(/^[ \t]+/, ''),
+    );
     this.typeAheadSvc.$addresses = null;
-    this.addressVal = cpItem.Text
+    this.addressVal = cpItem.Text;
   }
   setIndex(i: number) {
     const indexMap = [
@@ -354,7 +438,11 @@ export class SuccessComponent implements OnInit, OnDestroy {
       return fc.valid;
     }
     const indexOneCtrls = [ctrls.firstName, ctrls.lastName, ctrls.emailAddress];
-    const indexTwoCtrls = [ctrls.streetAddress, ctrls.postalCode, ctrls.locality];
+    const indexTwoCtrls = [
+      ctrls.streetAddress,
+      ctrls.postalCode,
+      ctrls.locality,
+    ];
     const indexThreeCtrls = [ctrls.dateOfBirth];
 
     const ctrlMap = [indexOneCtrls, indexTwoCtrls, indexThreeCtrls];
@@ -368,41 +456,47 @@ export class SuccessComponent implements OnInit, OnDestroy {
     return valid ? this.setIndex(i) : (this.invalid = true);
   }
 
-  constructor(
-    private stateSvc: StateService,
-    public actionSvc: ActionService,
-    private router: Router,
-    public typeAheadSvc: TypeaheadService,
-  ) {}
-
   async ngOnInit() {
     if (!this.stateSvc._id) return (this.hasId = false);
-    const user = this.stateSvc.user;
+    let user = this.stateSvc.userIdToken;
     const keys = Object.keys(user);
-    this.disableList = keys.filter(key => user[key] !== undefined || null || '');
+    this.disableList = keys.filter(
+      key => user[key] !== undefined || null || '',
+    );
 
-    if (!user) return;
-    const initFc = (val: string | Date, min: number = 4) =>
-      new FormControl(val, [Validators.required, Validators.minLength(min)]);
+    if (!user || user.preferred_username.startsWith('wa-')) {
+      user = {
+        given_name: this.stateSvc.invitedUser.firstName,
+        family_name: this.stateSvc.invitedUser.lastName,
+        address: {
+          street_address: '',
+          locality: '',
+          postal_code: ''
+        },
+        birthdate: ''
+      };
+    }
 
-    const firstName = initFc(user.firstName || '', 1);
-    const lastName = initFc(user.lastName || '', 1);
-    const emailAddress = new FormControl(user.email || '', [
+    const firstName = new FormControl(user.given_name, [Validators.required]);
+    const lastName = new FormControl(user.family_name, [Validators.required]);
+
+    const streetAddress = new FormControl(user.address.street_address, [
       Validators.required,
-      Validators.minLength(4),
-      Validators.email,
+    ]);
+    const postalCode = new FormControl(user.address.postal_code, [
+      Validators.required,
+      postalCodeValidator(),
+    ]);
+    const locality = new FormControl(user.address.locality, [
+      Validators.required,
     ]);
 
-    const streetAddress = initFc('');
-    const postalCode = new FormControl('', [Validators.required, postalCodeValidator()]);
-    const locality = initFc('');
-
-    const dateOfBirth = initFc('');
+    const birthdate = user.birthdate ? moment(user.birthdate).toDate() : '';
+    const dateOfBirth = new FormControl(birthdate, [Validators.required]);
 
     this.fg = new FormGroup({
       firstName,
       lastName,
-      emailAddress,
       streetAddress,
       postalCode,
       locality,
@@ -410,24 +504,24 @@ export class SuccessComponent implements OnInit, OnDestroy {
     });
 
     this.fg.updateValueAndValidity();
-    this.fg.controls.streetAddress.valueChanges.pipe(debounceTime(300)).subscribe(obs => {
-
-      if (obs === this.addressVal) return;
-      if (obs.length < 3) return (this.typeAheadSvc.$addresses = null);
-      const req = new CpRequest(obs);
-      this.typeAheadSvc.queryCp(req);
-    });
-    this.$title = of(`Issue Verified Person Digital ID`);
+    this.fg.controls.streetAddress.valueChanges
+      .pipe(debounceTime(300))
+      .subscribe(obs => {
+        if (obs === this.addressVal) return;
+        if (obs.length < 3) return (this.typeAheadSvc.$addresses = null);
+        const req = new CpRequest(obs);
+        this.typeAheadSvc.queryCp(req);
+      });
 
     const invitation = await this.actionSvc.getInvitation().toPromise();
     this.connectionId = invitation.connection_id;
-    const stringVal = JSON.stringify(invitation.invitation);
-    console.log(stringVal);
-    const encoded = invitation.base;
-    console.log(encoded);
+
+    console.log(JSON.stringify(invitation.invitation));
+
+    const inviteURL = `${AppConfigService.settings.baseUrl}?c_i=${invitation.base64}`;
     this.invite = invitation.invitation as any;
-    this.img = `https://chart.googleapis.com/chart?cht=qr&chs=300x300&chld=L|0&chl=${encoded}`;
-    this.deeplink = `id.streetcred://launch?d_m=${invitation.base}`;
+    this.img = `https://chart.googleapis.com/chart?cht=qr&chs=300x300&chld=L|0&chl=${inviteURL}`;
+    this.deeplink = `didcomm://launch?d_m=${invitation.base64}`;
     const previewData = of(this.setPreview(this.fg));
     this.$previewData = previewData;
     this.setIndex(0);
@@ -443,17 +537,12 @@ export class SuccessComponent implements OnInit, OnDestroy {
       {
         label: 'First Name',
         key: 'firstName',
-        value: values.firstName || '',
+        value: values.firstName || 'not defined',
       },
       {
         label: 'Last Name',
         key: 'lastName',
-        value: values.lastName || '',
-      },
-      {
-        label: 'Email Address',
-        key: 'emailAddress',
-        value: values.emailAddress || 'not defined',
+        value: values.lastName || 'not defined',
       },
       {
         label: 'Street Address',
@@ -491,7 +580,7 @@ export class SuccessComponent implements OnInit, OnDestroy {
         )
         .subscribe(obs => {
           console.log(JSON.stringify(this.invite, null, 2));
-          if (obs.state === 'active') {
+          if (obs.state === 'active' || obs.state === 'response') {
             if (this.submitting) return;
             this.submitting = true;
             this.actionSvc
@@ -501,7 +590,6 @@ export class SuccessComponent implements OnInit, OnDestroy {
                   userdisplayname: `${form.firstName} ${form.lastName}`,
                   stateorprovince: 'BC',
                   locality: form.locality,
-                  email: form.emailAddress,
                   birthdate: form.dateOfBirth,
                   surname: form.lastName,
                   givenname: form.firstName,
@@ -512,12 +600,13 @@ export class SuccessComponent implements OnInit, OnDestroy {
                 _id: this.stateSvc._id,
               })
               .toPromise()
-              .then(res => this.router.navigate([`/issue-credential/${res.credential_exchange_id}`]));
+              .then(res =>
+                this.router.navigate([
+                  `/issue-credential/${res.credential_exchange_id}`,
+                ]),
+              );
           }
         }),
     );
-  }
-  async logout() {
-    await this.actionSvc.logout();
   }
 }

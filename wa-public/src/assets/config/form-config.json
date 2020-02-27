@@ -1,0 +1,43 @@
+{
+  "elements": [
+    {
+      "type": "text",
+      "name": "given_names",
+      "title": "First Name",
+      "isRequired": true
+    },
+    {
+      "type": "text",
+      "name": "family_name",
+      "title": "Last Name",
+      "isRequired": true
+    },
+    {
+      "type": "text",
+      "inputType": "date",
+      "isRequired": true,
+      "name": "birthDate",
+      "title": "Date of birth:",
+      "dateFormat": "mm/dd/yy",
+      "startWithNewLine": true
+    },
+    {
+      "type": "text",
+      "name": "street_address",
+      "title": "Street Address",
+      "isRequired": true
+    },
+    {
+      "type": "text",
+      "name": "postal_code",
+      "title": "Postal Code",
+      "isRequired": true
+    },
+    {
+      "type": "text",
+      "name": "locality",
+      "title": "Locality",
+      "isRequired": true
+    }
+  ]
+}

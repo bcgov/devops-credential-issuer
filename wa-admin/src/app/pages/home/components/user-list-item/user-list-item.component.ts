@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { Router } from '@angular/router';
-import { IChangeRecord } from 'src/app/shared/interfaces/change-record.interface';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { IInvitationRecord } from 'src/app/shared/interfaces/invitation-record.interface';
+import { FormControl } from '@angular/forms';
+import { IChangeRecord } from 'src/app/shared/interfaces/change-record.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'waa-user-list-item',
@@ -57,7 +57,9 @@ export class UserListItemComponent implements OnInit {
   >();
 
   consumed: boolean;
+  method: string;
   email: string;
+  jurisdiction: string;
   expiry: number;
   active: boolean;
   firstName: string;
@@ -83,12 +85,16 @@ export class UserListItemComponent implements OnInit {
     this.router.navigate([`/view/${_id}`]);
   }
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+    // this.fc = new FormControl(active);
+  }
   ngOnInit() {
     const {
       _id,
       consumed,
+      method,
       email,
+      jurisdiction,
       expiry,
       active,
       firstName,
@@ -97,8 +103,10 @@ export class UserListItemComponent implements OnInit {
       issued
     } = this.invitationRecord;
     this.consumed = consumed;
+    this.method = method;
 
     this.email = email;
+    this.jurisdiction = jurisdiction;
     this.expiry = expiry;
     this.active = active;
     this.firstName = firstName;

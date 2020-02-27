@@ -19,51 +19,28 @@ mat-card {
 }
 
 .form-card {
-  max-width: 400px;
-}
-@media (min-width: 959px) {
-  .form-card {
-    max-width: 600px;
-  }
+  height: 555px;
 }
 
-@media (min-width: 660px) {
-  mat-card {
-    max-width: 660px;
-  }
-}
 ::ng-deep .mat-input-underline {
   display: none !important;
 }
 
 .dp-border {
   width: 100%;
-  border: 0.5px;
-  border-style: solid;
+  border-top: 1px solid;
   border-color: #ccd1e1;
 }
 .dp-border-focused {
-  border-style: solid;
-  width: 100%;
-  border: 1px;
   border-color: #4e7a89;
 }
 .dp-border-valid {
-  border-style: solid;
-  width: 100%;
-  border: 1px;
   border-color: #10dc60;
 }
 .dp-border-warn {
-  border-style: solid;
-  width: 100%;
-  border: 1px;
   border-color: #f53d3d;
 }
 .dp-border-grey {
-  width: 100%;
-  border: 0.5px;
-  border-style: solid;
   border-color: #ccd1e1;
 }
 
@@ -79,4 +56,18 @@ mat-card {
 .address-item:hover {
   background-color: #ccd1e1;
   cursor: pointer;
+}
+
+.float-right {
+  float: right;
+}
+
+.card-confirm-submission {
+  padding: 20px;
+}
+
+.date-form-field {
+  margin-top: -10px;
+  height: 54px;
+  font-size: 13px;
 }
