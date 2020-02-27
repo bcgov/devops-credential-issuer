@@ -26,39 +26,5 @@
     "validators": [
       "required"
     ]
-  },
-  {
-    "type": "radio",
-    "label": "Jurisdiction",
-    "fieldName": "jurisdiction",
-    "placeholder": "Select a jurisdiction",
-    "validators": [
-      "required"
-    ],
-    "options": [
-      {
-        "value": "BC",
-        "label": "British Columbia"
-      },
-      {
-        "value": "NS",
-        "label": "Nova Scotia"
-      }
-    ]
-  },
-  {
-    "type": "radio",
-    "label": "Authentication Method",
-    "fieldName": "method",
-    "placeholder": "Select an authentication method",
-    "validators": [
-      "required"
-    ],
-    "options": [
-      {
-        "value": "github",
-        "logo": "logo-github"
-      }
-    ]
   }
 ]
