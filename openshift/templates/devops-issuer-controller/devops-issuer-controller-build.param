@@ -6,6 +6,7 @@
 NAME=devops-issuer-controller
 APP_NAME=devops-issuer
 APP_GROUP=devops-issuer-runtime
+NAMESPACE_NAME=admgjk
 ENV_NAME=tools
 GIT_REPO_URL=https://github.com/bcgov/devops-credential-issuer.git
 GIT_REF=master

@@ -11,6 +11,7 @@
 APPLICATION_DOMAIN=devops-issuer-agent-admgjk-prod.pathfinder.gov.bc.ca
 # IMAGE_NAMESPACE=admgjk-tools
 # SOURCE_IMAGE_NAME=devops-issuer-agent
+# NAMESPACE_NAME=admgjk
 TAG_NAME=prod
 # AGENT_LABEL_NAME=devops-issuer-agent
 # AGENT_BASE_URL=https://devops-issuer-agent.pathfinder.gov.bc.ca
