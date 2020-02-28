@@ -1,26 +1,23 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { StateService } from 'src/app/services/state.service';
-import { ActionService } from 'src/app/services/action.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
-  FormGroup,
-  FormControl,
-  Validators,
   AbstractControl,
+  FormControl,
+  FormGroup,
+  Validators,
 } from '@angular/forms';
-import { postalCodeValidator } from 'src/app/services/validators';
-import { Observable, of, interval, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { take, mergeMap, debounce, debounceTime } from 'rxjs/operators';
-import { TypeaheadService, ICPItem } from 'src/app/services/typeahead.service';
-import { CpRequest } from 'src/app/models/cp-request';
+import { interval, Observable, of, Subscription } from 'rxjs';
+import { mergeMap, take } from 'rxjs/operators';
+import { ActionService } from 'src/app/services/action.service';
 import { AppConfigService } from 'src/app/services/app-config.service';
-import * as moment from 'moment';
+import { StateService } from 'src/app/services/state.service';
+import { TypeaheadService } from 'src/app/services/typeahead.service';
 
 @Component({
   selector: 'wap-success',
   template: `
     <wap-header
-      title="Issue Verified Person Digital ID"
+      title="Issue BC DevOps Verified Credential"
       [logoutUrl]="logoutUrl"
     ></wap-header>
 
@@ -330,8 +327,12 @@ export class SuccessComponent implements OnInit, OnDestroy {
       key => user[key] !== undefined || null || '',
     );
 
-    const firstName = new FormControl(user.given_name || '', [Validators.required]);
-    const lastName = new FormControl(user.family_name || '', [Validators.required]);
+    const firstName = new FormControl(user.given_name || '', [
+      Validators.required,
+    ]);
+    const lastName = new FormControl(user.family_name || '', [
+      Validators.required,
+    ]);
     const emailAddress = new FormControl(user.email || '', [
       Validators.required,
       Validators.email,

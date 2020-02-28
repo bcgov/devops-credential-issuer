@@ -22,7 +22,7 @@ import { AppConfigService } from 'src/app/services/app-config.service';
           <br />
           <p></p>
           <p>
-            To try out your new verified person credential please <a [href]="pocLink">click here</a>.
+            To try out your new BC DevOps credential please <a [href]="pocLink">click here</a>.
           </p></mat-card-content
         >
       </mat-card>
