@@ -17,7 +17,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { IonicModule } from '@ionic/angular';
-import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AcceptDisclaimerComponent } from './components/accept-disclaimer/accept-disclaimer.component';
@@ -36,8 +35,6 @@ import { TrackComponent } from './pages/track/track.component';
 import { AppConfigService } from './services/app-config.service';
 import { TermsAndConditionsComponent } from './components/terms-and-conditions/terms-and-conditions.component';
 import { HeaderComponent } from './components/header/header.component';
-
-const keycloakService = new KeycloakService();
 
 export function initializeApp(appConfigService: AppConfigService) {
   return () => appConfigService.load();
@@ -84,16 +81,11 @@ const components = [
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    KeycloakAngularModule,
     MatNativeDateModule,
     [...matModules],
     IonicModule.forRoot(),
   ],
   providers: [
-    {
-      provide: KeycloakService,
-      useValue: keycloakService,
-    },
     AppConfigService,
     {
       provide: APP_INITIALIZER,
@@ -102,34 +94,6 @@ const components = [
       multi: true,
     },
   ],
-  entryComponents: [AppComponent],
+  bootstrap: [AppComponent]
 })
-export class AppModule {
-  ngDoBootstrap(app) {
-    keycloakService
-      .init({
-        config: {
-          url: AppConfigService.settings.keycloak.url,
-          realm: AppConfigService.settings.keycloak.realm,
-          clientId: AppConfigService.settings.keycloak.clientId,
-        },
-        initOptions: {
-          onLoad: 'check-sso',
-          checkLoginIframe: false,
-        },
-        bearerExcludedUrls: [
-          '/assets',
-          '/validate',
-          '/completed',
-          'https://ws1.postescanada-canadapost.ca/AddressComplete/Interactive/AutoComplete/v1.00/json3.ws',
-        ],
-      })
-      .then(() => {
-        console.log('[ngDoBootstrap] bootstrap app');
-        app.bootstrap(AppComponent);
-      })
-      .catch(error =>
-        console.error('[ngDoBootstrap] init Keycloak failed', error),
-      );
-  }
-}
+export class AppModule { }

@@ -16,12 +16,6 @@ export interface IAppConfig {
     siteUrl: string;
   };
 
-  keycloak: {
-    url: string;
-    realm: string;
-    clientId: string;
-  };
-
   disclaimer: string;
 }
 

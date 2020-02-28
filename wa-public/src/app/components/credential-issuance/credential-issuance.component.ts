@@ -90,7 +90,7 @@ import { StateService } from 'src/app/services/state.service';
 export class CredentialIssuanceComponent implements OnInit, OnDestroy {
   @Input() credExId: string;
 
-  readonly logoutUrl: string = `${AppConfigService.settings.baseUrl}/completed`;
+  readonly logoutUrl: string = '/completed';
 
   $user: Observable<string>;
   step: number;
@@ -134,7 +134,6 @@ export class CredentialIssuanceComponent implements OnInit, OnDestroy {
   }
 
   async completeProgress() {
-    // TODO: use header logout function rather than defining a helper here
-    await this.actionSvc.logout(this.logoutUrl);
+    await this.router.navigate([this.logoutUrl]);
   }
 }

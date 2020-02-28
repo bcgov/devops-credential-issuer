@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { KeycloakService } from 'keycloak-angular';
 import { IInvitationRecord } from '../interfaces/invitation-record';
 import { AppConfigService } from './app-config.service';
 import { StateService, IValidateLink } from './state.service';
@@ -37,15 +36,9 @@ export interface IssueCredential {
   _id: string;
 }
 export interface Claims {
-  userdisplayname: string;
-  surname: string;
-  givenname: string;
-  birthdate: string;
-  streetaddress: string;
-  locality: string;
-  stateorprovince: string;
-  postalcode: string;
-  country: string;
+  family_name: string;
+  given_name: string;
+  email: string;
 }
 
 export interface IssueResponse {
@@ -97,17 +90,10 @@ export class ActionService {
   _apiUrl: string;
 
   constructor(
-    private keyCloakSvc: KeycloakService,
     private stateSvc: StateService,
     private http: HttpClient,
   ) {
     this._apiUrl = AppConfigService.settings.apiServer.url;
-    this.stateSvc.userIdToken = this.keyCloakSvc.getKeycloakInstance().idTokenParsed;
-    console.log('*****IDTOKEN: ', this.stateSvc.userIdToken);
-  }
-
-  async logout(uri?: string) {
-    return this.keyCloakSvc.logout(uri || '');
   }
 
   getInvitation() {

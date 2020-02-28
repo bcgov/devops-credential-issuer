@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { StateService, IValidateLink } from 'src/app/services/state.service';
-import { ActionService } from 'src/app/services/action.service';
-import { HttpClient } from '@angular/common/http';
-import { KeycloakService } from 'keycloak-angular';
 import { AppConfigService } from 'src/app/services/app-config.service';
 
 @Component({
@@ -28,22 +25,41 @@ import { AppConfigService } from 'src/app/services/app-config.service';
       <ion-card>
         <ion-card-content>
           <ion-item lines="none">
-            <ion-label><ion-text class="ion-text-wrap">I agree to the above terms of service.</ion-text></ion-label>
-            <ion-checkbox slot="start" (click)="accepted = !accepted"></ion-checkbox>
+            <ion-label
+              ><ion-text class="ion-text-wrap"
+                >I agree to the above terms of service.</ion-text
+              ></ion-label
+            >
+            <ion-checkbox
+              slot="start"
+              (click)="accepted = !accepted"
+            ></ion-checkbox>
           </ion-item>
           <ion-grid>
             <ion-row>
               <ion-col class="ion-align-self-start">
-                <ion-button (click)="decline()" (click)="decline()" color="danger" size="default">Leave</ion-button>
+                <ion-button
+                  (click)="decline()"
+                  (click)="decline()"
+                  color="danger"
+                  size="default"
+                  >Leave</ion-button
+                >
               </ion-col>
               <ion-col class="ion-align-self-end">
-                <ion-button (click)="submit()" [disabled]="!accepted" color="primary" size="default" class="float-right">Proceed</ion-button>
+                <ion-button
+                  (click)="submit()"
+                  [disabled]="!accepted"
+                  color="primary"
+                  size="default"
+                  class="float-right"
+                  >Proceed</ion-button
+                >
               </ion-col>
             </ion-row>
           </ion-grid>
         </ion-card-content>
       </ion-card>
-
     </wap-view-wrapper>
     <ng-template #noIdHelper>
       <wap-view-wrapper>
@@ -52,7 +68,8 @@ import { AppConfigService } from 'src/app/services/app-config.service';
             Please re-enter invitation link.
           </mat-card-title>
           <mat-card-content>
-            Your session has expired. Please re-enter the link from the POC Invitation email.
+            Your session has expired. Please re-enter the link from the POC
+            Invitation email.
           </mat-card-content>
         </mat-card>
       </wap-view-wrapper>
@@ -61,7 +78,6 @@ import { AppConfigService } from 'src/app/services/app-config.service';
   styleUrls: ['./accept-disclaimer.component.scss'],
 })
 export class AcceptDisclaimerComponent implements OnInit {
-
   private termsOfService: string;
 
   hasId = true;
@@ -71,9 +87,7 @@ export class AcceptDisclaimerComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private stateSvc: StateService,
-    private keycloakService: KeycloakService
-  ) {
-  }
+  ) {}
 
   async ngOnInit() {
     this.stateSvc._id = null;
@@ -87,10 +101,7 @@ export class AcceptDisclaimerComponent implements OnInit {
   }
 
   submit() {
-    const loginOptions: Keycloak.KeycloakLoginOptions = {
-      redirectUri: `${AppConfigService.settings.baseUrl}/success`
-    };
-    this.keycloakService.login(loginOptions);
+    this.router.navigate(['/success']);
   }
 
   decline() {

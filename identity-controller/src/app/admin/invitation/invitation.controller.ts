@@ -57,9 +57,7 @@ router.post('/', async (ctx: Context) => {
   const valid = validateInvitation(data);
   if (valid.errors) return ctx.throw(400, valid.errors.details);
   const {
-    method,
     email,
-    jurisdiction,
     addedBy,
     firstName = '',
     lastName = '',
@@ -73,9 +71,7 @@ router.post('/', async (ctx: Context) => {
   const expiry = new Date();
   expiry.setDate(today.getDate() + 1);
   const record = {
-    method,
     email,
-    jurisdiction,
     consumed: false,
     expiry: expiry,
     active: true,
@@ -86,13 +82,13 @@ router.post('/', async (ctx: Context) => {
     linkId: uuidv4(),
   } as IInvitationRecord;
   try {
-    const exists = await client.getRecordByQuery({
-      collection: 'invitations',
-      query: { email },
-    });
-    if (exists != null) {
-      ctx.throw(400, `User with email ${email} already exists`);
-    }
+    // const exists = await client.getRecordByQuery({
+    //   collection: 'invitations',
+    //   query: { email },
+    // });
+    // if (exists != null) {
+    //   ctx.throw(400, `User with email ${email} already exists`);
+    // }
     const res = await client.insertRecord<IInvitationRecord>({
       collection: 'invitations',
       record,
