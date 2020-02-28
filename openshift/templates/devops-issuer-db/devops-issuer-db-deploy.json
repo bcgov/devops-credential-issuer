@@ -317,7 +317,7 @@
       "displayName": "MongoDB Database Name",
       "description": "The name of the MongoDB database.",
       "required": true,
-      "value": "identity_kit_db"
+      "value": "devops_issuer_db"
     },
     {
       "name": "MONGODB_USER",
@@ -333,7 +333,7 @@
       "description": "Password for the MongoDB connection user.  Needs to be basee64 encoded/",
       "required": true,
       "generate": "expression",
-      "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
+      "from": "[a-zA-Z0-9_!@#$%^&*()-=<>,.?;:|]{16}"
     },
     {
       "name": "MONGODB_ADMIN_PASSWORD",
@@ -341,7 +341,7 @@
       "description": "Password for the MongoDB administrative account.  Needs to be basee64 encoded.",
       "required": true,
       "generate": "expression",
-      "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
+      "from": "[a-zA-Z0-9_!@#$%^&*()-=<>,.?;:|]{16}"
     },
     {
       "name": "MOUNT_PATH",

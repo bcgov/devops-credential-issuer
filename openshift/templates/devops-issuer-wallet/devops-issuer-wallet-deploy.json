@@ -320,7 +320,7 @@
       "displayName": "PostgreSQL Database Name",
       "description": "The name of the PostgreSQL database.",
       "required": true,
-      "value": "identity_kit_wallet"
+      "value": "devops_issuer_wallet"
     },
     {
       "name": "POSTGRESQL_USER",
@@ -336,7 +336,7 @@
       "description": "Password for the PostgreSQL connection user.  Needs to be basee64 encoded/",
       "required": true,
       "generate": "expression",
-      "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
+      "from": "[a-zA-Z0-9_!@#$%^&*()-=<>,.?;:|]{16}"
     },
     {
       "name": "POSTGRESQL_ADMIN_PASSWORD",
@@ -344,7 +344,7 @@
       "description": "Password for the 'postgres' PostgreSQL administrative account.  Needs to be basee64 encoded.",
       "required": true,
       "generate": "expression",
-      "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
+      "from": "[a-zA-Z0-9_!@#$%^&*()-=<>,.?;:|]{16}"
     },
     {
       "name": "MOUNT_PATH",

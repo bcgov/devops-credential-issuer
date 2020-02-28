@@ -333,6 +333,11 @@ parameters:
     description: The name of the source image to use for the service.
     required: true
     value: devops-issuer-agent
+  - name: NAMESPACE_NAME
+    displayName: Namespace Name
+    description: The name of the namespace being deployed to.
+    required: true
+    value: admgjk
   - name: TAG_NAME
     displayName: Environment TAG name
     description: The TAG name for this environment, e.g., dev, test, prod.
