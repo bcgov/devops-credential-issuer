@@ -6,9 +6,10 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'wap-page-not-found',
   template: `
-    No page here.
+    <wap-header></wap-header>
+    <h1>This is not a page. Nothing to see here.</h1>
   `,
-  styleUrls: ['./page-not-found.component.scss']
+  styleUrls: ['./page-not-found.component.scss'],
 })
 export class PageNotFoundComponent implements OnInit {
   constructor() {}
