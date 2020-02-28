@@ -279,6 +279,33 @@
           ]
         ]
       }
+    },
+    {
+      "kind": "NetworkSecurityPolicy",
+      "apiVersion": "secops.pathfinder.gov.bc.ca/v1alpha1",
+      "metadata": {
+        "name": "controller-to-external-network",
+        "labels": {
+          "name": "controller-to-external-network",
+          "env": "${TAG_NAME}"
+        }
+      },
+      "spec": {
+        "description": "Allow the builds to access the internet.\nThis only needs to be specified once per environment.\n",
+        "source": [
+          [
+            "role=${ROLE}",
+            "app=${APP_NAME}",
+            "env=${TAG_NAME}",
+            "$namespace=${NAMESPACE_NAME}-${TAG_NAME}"
+          ]
+        ],
+        "destination": [
+          [
+            "ext:network=any"
+          ]
+        ]
+      }
     }
   ],
   "parameters": [
@@ -428,20 +455,6 @@
       "description": "Specifies the path to a file containing a custom schema definition. If set, the controller will try to use this schema instead of the default one.",
       "required": false,
       "value": ""
-    },
-    {
-      "name": "MIN_REPLICAS",
-      "displayName": "Minimum Replicas",
-      "description": "The minimum number of pods to have running.",
-      "required": true,
-      "value": "1"
-    },
-    {
-      "name": "MAX_REPLICAS",
-      "displayName": "Maximum Replicas",
-      "description": "The maximum number of pods to have running.",
-      "required": true,
-      "value": "2"
     },
     {
       "name": "CPU_REQUEST",
