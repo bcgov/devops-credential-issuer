@@ -3,7 +3,6 @@ export interface IInvitationRecord {
   consumed: boolean;
   method: string;
   email: string;
-  jurisdiction: string;
   expiry?: Date;
   expired?: boolean;
   active: boolean;

@@ -39,6 +39,18 @@ import { TypeaheadService } from 'src/app/services/typeahead.service';
               <mat-card-content [formGroup]="fg">
                 <ion-list>
                   <wap-input
+                    [fc]="fg.controls['sub']"
+                    label="User ID"
+                    error="User ID is required"
+                    [invalid]="
+                      (invalid && fg.controls['sub'].invalid) ||
+                      (fg.controls['sub'].touched &&
+                        fg.controls['sub'].invalid)
+                    "
+                    disabled="true"
+                  >
+                  </wap-input>
+                  <wap-input
                     [fc]="fg.controls['firstName']"
                     placeholder="John"
                     label="First Name"
@@ -318,6 +330,7 @@ export class SuccessComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     if (!this.stateSvc._id) return (this.hasId = false);
     const user = {
+      sub: this.stateSvc.linkId,
       given_name: this.stateSvc.invitedUser.firstName,
       family_name: this.stateSvc.invitedUser.lastName,
       email: this.stateSvc.invitedUser.email,
@@ -327,6 +340,9 @@ export class SuccessComponent implements OnInit, OnDestroy {
       key => user[key] !== undefined || null || '',
     );
 
+    const sub = new FormControl(user.sub || '', [
+      Validators.required,
+    ]);
     const firstName = new FormControl(user.given_name || '', [
       Validators.required,
     ]);
@@ -339,6 +355,7 @@ export class SuccessComponent implements OnInit, OnDestroy {
     ]);
 
     this.fg = new FormGroup({
+      sub,
       firstName,
       lastName,
       emailAddress,
@@ -367,6 +384,11 @@ export class SuccessComponent implements OnInit, OnDestroy {
   setPreview(fg: FormGroup) {
     const values = fg.getRawValue();
     const map = [
+      {
+        label: 'User ID',
+        key: 'sub',
+        value: values.sub || 'not defined',
+      },
       {
         label: 'First Name',
         key: 'firstName',
@@ -405,6 +427,7 @@ export class SuccessComponent implements OnInit, OnDestroy {
               .issueCredentials({
                 connectionId: this.connectionId,
                 claims: {
+                  sub: form.sub,
                   family_name: form.lastName,
                   given_name: form.firstName,
                   email: form.emailAddress,

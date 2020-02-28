@@ -57,11 +57,9 @@ router.post('/', async (ctx: Context) => {
       );
       return ctx.throw(500, 'failed to create credential exchange record');
     }
-    const expiry = futureDate(710);
     const record = await client.updateRecord({
       collection: 'invitations',
       query: {
-        expiry,
         connectionId: data.connectionId,
         credExId: res.credential_exchange_id,
         issued: false,
