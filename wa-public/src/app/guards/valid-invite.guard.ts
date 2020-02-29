@@ -33,6 +33,7 @@ export class ValidInviteGuard implements CanActivate {
         console.log(obs);
         if (!obs) return false;
         if (!obs.active) return this.router.createUrlTree(['/']);
+        if (obs.consumed) return this.router.createUrlTree(['already-issued']);
         if (obs.active && obs.expired) {
           return this.router.createUrlTree([`request/${inviteToken}`]);
         }

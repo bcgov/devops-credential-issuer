@@ -35,6 +35,7 @@ import { TrackComponent } from './pages/track/track.component';
 import { AppConfigService } from './services/app-config.service';
 import { TermsAndConditionsComponent } from './components/terms-and-conditions/terms-and-conditions.component';
 import { HeaderComponent } from './components/header/header.component';
+import { AlreadyIssuedComponent } from './components/already-issued/already-issued.component';
 
 export function initializeApp(appConfigService: AppConfigService) {
   return () => appConfigService.load();
@@ -75,7 +76,7 @@ const components = [
 ];
 
 @NgModule({
-  declarations: [[...components], AppComponent],
+  declarations: [[...components], AppComponent, AlreadyIssuedComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

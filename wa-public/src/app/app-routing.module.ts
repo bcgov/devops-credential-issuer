@@ -8,6 +8,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { CompletedComponent } from './pages/completed/completed.component';
 import { SuccessComponent } from './pages/success/success.component';
 import { TrackComponent } from './pages/track/track.component';
+import { AlreadyIssuedComponent } from './components/already-issued/already-issued.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,10 @@ const routes: Routes = [
   {
     path: 'request/:id',
     component: RequestTokenComponent,
+  },
+  {
+    path: 'already-issued',
+    component: AlreadyIssuedComponent,
   },
   {
     path: 'completed',

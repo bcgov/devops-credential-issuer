@@ -7,6 +7,7 @@ export interface IValidateLink {
   _id: string;
   expired: boolean;
   active: boolean;
+  consumed?: boolean;
   user?: {
     firstName: string;
     lastName: string;
