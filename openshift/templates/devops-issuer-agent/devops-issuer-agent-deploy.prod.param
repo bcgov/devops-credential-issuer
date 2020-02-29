@@ -1,0 +1,36 @@
+#=========================================================
+# OpenShift template parameters for:
+# Component: .
+# Template File: ../openshift/templates/devops-issuer-agent/devops-issuer-agent-deploy.yaml
+#=========================================================
+# NAME=devops-issuer-agent
+# APP_NAME=devops-issuer
+# APP_GROUP=devops-issuer-agent
+# SUFFIX=
+# ROLE=agent
+APPLICATION_DOMAIN=devops-issuer-agent-admgjk-prod.pathfinder.gov.bc.ca
+# IMAGE_NAMESPACE=admgjk-tools
+# SOURCE_IMAGE_NAME=devops-issuer-agent
+# NAMESPACE_NAME=admgjk
+TAG_NAME=prod
+AGENT_LABEL_NAME=BCDevOps-Issuer-PROD
+# AGENT_BASE_URL=https://devops-issuer-agent-admgjk-prod.pathfinder.gov.bc.ca
+# WEBHOOK_URL=http://devops-issuer-controller:8080
+# AGENT_ADMIN_PORT=8024
+# ADMIN_API_KEY=[a-zA-Z0-9]{16}
+# AGENT_HTTP_PORT=8021
+# GENESIS_FILE_URL=http://test.bcovrin.vonx.io/genesis
+# LOG_LEVEL=WARNING
+# WALLET_STORAGE_TYPE=postgres_storage
+# WALLET_HOST=devops-issuer-wallet
+# WALLET_HOST_PORT=5432
+# WALLET_STORAGE_CONFIG={\"url\":\"${POSTGRESQL_WALLET_HOST}:${POSTGRESQL_WALLET_PORT}\",\"max_connections\":5}
+# WALLET_STORAGE_CREDS={\"account\":\"${POSTGRESQL_WALLET_USER}\",\"password\":\"${POSTGRESQL_WALLET_PASSWORD}\",\"admin_account\":\"postgres\",\"admin_password\":\"${POSTGRESQL_WALLET_ADMIN_PASSWORD}\"}
+# WALLET_CREDENTIAL_STORE_NAME=devops-issuer-agent-wallet-credentials
+# WALLET_KEY=[a-zA-Z0-9]{10}
+# WALLET_SEED=[a-zA-Z0-9]{32}
+# WALLET_DID=[a-zA-Z0-9]{16}
+# CPU_REQUEST=10m
+# CPU_LIMIT=1000m
+# MEMORY_REQUEST=10Mi
+# MEMORY_LIMIT=1Gi
