@@ -39,13 +39,13 @@ import { TypeaheadService } from 'src/app/services/typeahead.service';
               <mat-card-content [formGroup]="fg">
                 <ion-list>
                   <wap-input
-                    [fc]="fg.controls['sub']"
+                    [fc]="fg.controls['username']"
                     label="User ID"
                     error="User ID is required"
                     [invalid]="
-                      (invalid && fg.controls['sub'].invalid) ||
-                      (fg.controls['sub'].touched &&
-                        fg.controls['sub'].invalid)
+                      (invalid && fg.controls['username'].invalid) ||
+                      (fg.controls['username'].touched &&
+                        fg.controls['username'].invalid)
                     "
                     disabled="true"
                   >
@@ -330,7 +330,7 @@ export class SuccessComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     if (!this.stateSvc._id) return (this.hasId = false);
     const user = {
-      sub: this.stateSvc.linkId,
+      username: this.stateSvc.linkId,
       given_name: this.stateSvc.invitedUser.firstName,
       family_name: this.stateSvc.invitedUser.lastName,
       email: this.stateSvc.invitedUser.email,
@@ -340,7 +340,7 @@ export class SuccessComponent implements OnInit, OnDestroy {
       key => user[key] !== undefined || null || '',
     );
 
-    const sub = new FormControl(user.sub || '', [
+    const username = new FormControl(user.username || '', [
       Validators.required,
     ]);
     const firstName = new FormControl(user.given_name || '', [
@@ -355,7 +355,7 @@ export class SuccessComponent implements OnInit, OnDestroy {
     ]);
 
     this.fg = new FormGroup({
-      sub,
+      username,
       firstName,
       lastName,
       emailAddress,
@@ -386,8 +386,8 @@ export class SuccessComponent implements OnInit, OnDestroy {
     const map = [
       {
         label: 'User ID',
-        key: 'sub',
-        value: values.sub || 'not defined',
+        key: 'username',
+        value: values.username || 'not defined',
       },
       {
         label: 'First Name',
@@ -427,7 +427,7 @@ export class SuccessComponent implements OnInit, OnDestroy {
               .issueCredentials({
                 connectionId: this.connectionId,
                 claims: {
-                  sub: form.sub,
+                  username: form.username,
                   family_name: form.lastName,
                   given_name: form.firstName,
                   email: form.emailAddress,

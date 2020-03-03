@@ -11,7 +11,7 @@ export class DefaultSchemaDefinition implements ISchemaDefinition {
 
   constructor() {
     this.attributes = [
-      'sub',
+      'username',
       'family_name',
       'given_name',
       'email',
@@ -19,6 +19,6 @@ export class DefaultSchemaDefinition implements ISchemaDefinition {
     ];
 
     this.schema_name = 'bcdevops-vc';
-    this.schema_version = '0.1.1';
+    this.schema_version = '0.1.2';
   }
 }
