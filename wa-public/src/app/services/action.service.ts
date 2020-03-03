@@ -36,7 +36,7 @@ export interface IssueCredential {
   _id: string;
 }
 export interface Claims {
-  sub: string;
+  username: string;
   family_name: string;
   given_name: string;
   email: string;
