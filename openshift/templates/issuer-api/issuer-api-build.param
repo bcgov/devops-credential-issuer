@@ -1,16 +1,16 @@
 #=========================================================
 # OpenShift template parameters for:
 # Component: .
-# Template File: ../openshift/templates/issuer-api/api-build.json
+# Template File: ../openshift/templates/issuer-api/issuer-api-build.json
 #=========================================================
-NAME=devops-issuer-controller
-APP_NAME=devops-issuer
-APP_GROUP=devops-issuer-runtime
+NAME=issuer-api
+APP_NAME=issuer-kit
+APP_GROUP=issuer-kit-runtime
 NAMESPACE_NAME=admgjk
 ENV_NAME=tools
 GIT_REPO_URL=https://github.com/bcgov/identity-kit-poc.git
 GIT_REF=master
-SOURCE_CONTEXT_DIR=identity-controller
+SOURCE_CONTEXT_DIR=api
 SOURCE_IMAGE_KIND=DockerImage
 SOURCE_IMAGE_NAME=centos/nodejs-12-centos7
 SOURCE_IMAGE_TAG=latest

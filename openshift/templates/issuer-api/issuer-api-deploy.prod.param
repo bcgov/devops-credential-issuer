@@ -3,33 +3,31 @@
 # Component: .
 # Template File: ../openshift/templates/issuer-api/issuer-api-deploy.json
 #=========================================================
-# NAME=devops-issuer-controller
-# APP_NAME=devops-issuer
-# APP_GROUP=devops-issuer-controller
-# SUFFIX=
+# NAME=issuer-api
+# APP_NAME=issuer-kit
+# APP_GROUP=issuer-kit-controller
+# SUFFIX=-bcdevops
 # ROLE=controller
 # IMAGE_NAMESPACE=admgjk-tools
 # NAMESPACE_NAME=admgjk
 # SERVICE_PORT=8080
-# DB_SERVICE=devops-issuer-db
+# DB_SERVICE=issuer-db
 # DB_PORT=27017
-# DB_NAME=devops_issuer_db
-# SOURCE_IMAGE_NAME=devops-issuer-controller
+# DB_NAME=issuer_kit_db
+# SOURCE_IMAGE_NAME=issuer-api
 TAG_NAME=prod
-# AGENT_SERVICE_NAME=devops-issuer-agent
+# AGENT_SERVICE_NAME=issuer-agent
 # AGENT_ADMIN_PORT=8024
 # SMTP_SERVER_ADDRESS=
 # SMTP_SERVER_PORT=
 # ADMIN_EMAIL=
-# EMAIL_SUBJECT=Invite to obtain a BC DevOps Verifiable Credential
-PUBLIC_SITE_URL=https://devops-issuer.pathfinder.gov.bc.ca
-# APP_CONFIG_MAP_NAME=issuer-controller-config
+EMAIL_SUBJECT=Invite from BCDevOps Issuer
+PUBLIC_SITE_URL=https://bcdevops-issuer.pathfinder.gov.bc.ca
+# APP_CONFIG_MAP_NAME=api-config
 # APP_CONFIG_MOUNT_PATH=/opt/app-root/src/config/
 # APP_CONFIG_FILE_NAME=default.json
 # APP_SCHEMAS_FILE_NAME=schemas.json
 # APP_EMAIL_INVITE_FILE_NAME=invite-email.html
-# MIN_REPLICAS=1
-# MAX_REPLICAS=1
 # CPU_REQUEST=10m
 # CPU_LIMIT=300m
 # MEMORY_REQUEST=10Mi
