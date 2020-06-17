@@ -51,48 +51,6 @@ objects:
         name: ${NAME}${SUFFIX}
         weight: 100
 
-  - kind: Route
-    apiVersion: v1
-    metadata:
-      name: ${NAME}-admin${SUFFIX}
-      labels:
-        name: ${NAME}${SUFFIX}
-        app: ${APP_NAME}${SUFFIX}
-        app-group: ${APP_GROUP}
-        role: ${ROLE}
-        env: ${TAG_NAME}
-      annotations:
-        haproxy.router.openshift.io/timeout: ${ROUTE_TIMEOUT}
-    spec:
-      host: ${ADMIN_APPLICATION_DOMAIN}
-      port:
-        targetPort: ${NAME}-admin
-      tls:
-        insecureEdgeTerminationPolicy: Redirect
-        termination: edge
-      to:
-        kind: Service
-        name: ${NAME}${SUFFIX}
-        weight: 100
-
-  - kind: PersistentVolumeClaim
-    apiVersion: v1
-    metadata:
-      name: ${NAME}${SUFFIX}-tails
-      labels:
-        name: ${NAME}${SUFFIX}
-        app: ${APP_NAME}${SUFFIX}
-        app-group: ${APP_GROUP}
-        role: ${ROLE}
-        env: ${TAG_NAME}
-    spec:
-      storageClassName: "${TAILS_FILES_VOLUME_CLASS}"
-      accessModes:
-      - ReadWriteMany
-      resources:
-        requests:
-          storage: "${TAILS_FILES_VOLUME_SIZE}"
-
   - kind: Secret
     apiVersion: v1
     metadata:
@@ -121,7 +79,6 @@ objects:
         env: ${TAG_NAME}
     stringData:
       admin-api-key: ${ADMIN_API_KEY}
-      webhook-url: ${WEBHOOK_URL}
     type: Opaque
 
   - kind: DeploymentConfig
@@ -150,10 +107,6 @@ objects:
             role: ${ROLE}
             env: ${TAG_NAME}
         spec:
-          volumes:
-            - name: ${NAME}${SUFFIX}-tails
-              persistentVolumeClaim:
-                claimName: ${NAME}${SUFFIX}-tails
           containers:
             - name: ${NAME}${SUFFIX}
               command:
@@ -229,10 +182,7 @@ objects:
                       name: ${WALLET_CREDENTIAL_STORE_NAME}${SUFFIX}
                       key: did
                 - name: WEBHOOK_URL
-                  valueFrom:
-                    secretKeyRef:
-                      name: ${NAME}${SUFFIX}
-                      key: webhook-url
+                  value: ${WEBHOOK_URL}
                 - name: HTTP_INTERFACE_PORT
                   value: ${AGENT_HTTP_PORT}
                 - name: ADMIN_INTERFACE_PORT
@@ -248,17 +198,12 @@ objects:
                   value: ${AGENT_BASE_URL}
                 - name: AGENT_LOG_LEVEL
                   value: ${LOG_LEVEL}
-                - name: TMPDIR
-                  value: ${TAILS_FILES_DIR}
               image:
               ports:
                 - containerPort: ${{AGENT_ADMIN_PORT}}
                   protocol: TCP
                 - containerPort: ${{AGENT_HTTP_PORT}}
                   protocol: TCP
-              volumeMounts:
-              - name: ${NAME}${SUFFIX}-tails
-                mountPath: ${TAILS_FILES_DIR}
               readinessProbe:
                 timeoutSeconds: 30
                 initialDelaySeconds: 3
@@ -301,10 +246,10 @@ objects:
   - kind: NetworkSecurityPolicy
     apiVersion: secops.pathfinder.gov.bc.ca/v1alpha1
     metadata:
-      name: custom-${APP_NAME}-${NAME}${SUFFIX}-to-external-network
+      name: custom-${APP_NAME}-${NAME}-to-external-network
       labels:
-        name: custom-${APP_NAME}-${NAME}${SUFFIX}-to-external-network
-        app: ${APP_NAME}${SUFFIX}
+        name: custom-${APP_NAME}-${NAME}-to-external-network
+        app: ${APP_NAME}
         app-group: ${APP_GROUP}
         role: ${ROLE}
         env: ${TAG_NAME}
@@ -313,7 +258,7 @@ objects:
         Allow the agent to access the internet.
       source:
         - - role=${ROLE}
-          - app=${APP_NAME}${SUFFIX}
+          - app=${APP_NAME}
           - env=${TAG_NAME}
           - $namespace=${NAMESPACE_NAME}-${TAG_NAME}
       destination:
@@ -322,10 +267,10 @@ objects:
   - kind: NetworkSecurityPolicy
     apiVersion: secops.pathfinder.gov.bc.ca/v1alpha1
     metadata:
-      name: custom-${APP_NAME}-${NAME}${SUFFIX}-policy
+      name: custom-${APP_NAME}-${NAME}-policy
       labels:
-        name: custom-${APP_NAME}-${NAME}${SUFFIX}-policy
-        app: ${APP_NAME}${SUFFIX}
+        name: custom-${APP_NAME}-${NAME}-policy
+        app: ${APP_NAME}
         app-group: ${APP_GROUP}
         role: ${ROLE}
         env: ${TAG_NAME}
@@ -334,17 +279,17 @@ objects:
         Allow the agent to talk to either the wallet or controller micro services.
       source:
         - - role=${ROLE}
-          - app=${APP_NAME}${SUFFIX}
+          - app=${APP_NAME}
           - env=${TAG_NAME}
           - $namespace=${NAMESPACE_NAME}-${TAG_NAME}
 
       destination:
         - - role=wallet
-          - app=${APP_NAME}${SUFFIX}
+          - app=${APP_NAME}
           - env=${TAG_NAME}
           - $namespace=${NAMESPACE_NAME}-${TAG_NAME}
         - - role=controller
-          - app=${APP_NAME}${SUFFIX}
+          - app=${APP_NAME}
           - env=${TAG_NAME}
           - $namespace=${NAMESPACE_NAME}-${TAG_NAME}
 
@@ -353,12 +298,12 @@ parameters:
     displayName: Name
     description: The name assigned to all the objects defined in this template.
     required: true
-    value: issuer-kit-agent
+    value: issuer-agent
   - name: APP_NAME
     displayName: App Name
     description: Used to group components together in the OpenShift console.
     required: true
-    value: issuer
+    value: issuer-kit
   - name: APP_GROUP
     displayName: App Group
     description: Used to group components together.
@@ -376,23 +321,23 @@ parameters:
     value: agent
   - name: APPLICATION_DOMAIN
     displayName: Application Hostname
-    description: The exposed hostname that will route to the public service endpoint, if left blank a value will be defaulted.
+    description: The exposed hostname that will route to the service, if left blank a value will be defaulted.
     required: false
-    value: issuer-kit-agent.pathfinder.gov.bc.ca
-  - name: ADMIN_APPLICATION_DOMAIN
-    displayName: Admin Application Hostname
-    description: The exposed hostname that will route to the admin service endpoint, if left blank a value will be defaulted.
-    required: false
-    value: issuer-kit-agent-admin.pathfinder.gov.bc.ca
+    value:
   - name: IMAGE_NAMESPACE
     displayName: Namespace containing application images.
     required: true
     value: admgjk-tools
+  - name: NAMESPACE_NAME
+    displayName: Namespace Name
+    description: The name of the namespace being deployed to.
+    required: true
+    value: admgjk
   - name: SOURCE_IMAGE_NAME
     displayName: Source Image Name
     description: The name of the source image to use for the service.
     required: true
-    value: agent
+    value: issuer-agent
   - name: TAG_NAME
     displayName: Environment TAG name
     description: The TAG name for this environment, e.g., dev, test, prod.
@@ -412,7 +357,7 @@ parameters:
     displayName: Webhook URL
     description: The webhook endpoint
     required: true
-    value: http://issuer-kit-controller:8080
+    value: http://issuer-api:8080/webhooks
   - name: AGENT_ADMIN_PORT
     displayName: Agent Admin Port
     description: The admin port on which the service will listen.
@@ -433,7 +378,7 @@ parameters:
     displayName: Genesis File URL
     description: The URL from which the genesis file can be downloaded.
     required: true
-    value: https://raw.githubusercontent.com/sovrin-foundation/sovrin/stable/sovrin/pool_transactions_sandbox_genesis
+    value: http://test.bcovrin.vonx.io/genesis
   - name: LOG_LEVEL
     displayName: Log Level
     description: The logging level for the agent.
@@ -453,7 +398,7 @@ parameters:
     displayName: PostgreSql Wallet Hostname
     required: true
     description: Hostname of the deployed database hosting the wallet.  Only used when WALLET_STORAGE_TYPE = postgres_storage.
-    value: wallet
+    value: issuer-wallet
   - name: WALLET_HOST_PORT
     displayName: PostgreSql Wallet Port
     required: true
@@ -475,7 +420,7 @@ parameters:
       The name of the wallet credential store (aka The name of the secret
       that contains the wallet credentials).
     required: true
-    value: agent-wallet-credentials
+    value: identity-kit-agent-wallet-credentials
   - name: WALLET_KEY
     displayName: Wallet Encryption Key
     description: The encryption key to be used for the wallets.  Needs to be base64 encoded.
@@ -494,27 +439,6 @@ parameters:
     required: false
     generate: expression
     from: "[a-zA-Z0-9]{16}"
-  # ===============================================================================
-  # Tails Files Configuration
-  #--------------------------------------------------------------------------------
-  - name: TAILS_FILES_DIR
-    displayName: Tails File Storage Dir
-    description:
-      The directory where the local copies of the tails files will be stored.
-    required: true
-    value: /tails_files
-  - name: TAILS_FILES_VOLUME_CLASS
-    displayName: Tails File Storage Volume Class
-    description:
-      The class of the volume; gluster-file, gluster-block, gluster-file-db, netapp-file-standard, netapp-block-standard.
-    required: true
-    value: netapp-file-standard
-  - name: TAILS_FILES_VOLUME_SIZE
-    displayName: Tails File Storage Dir
-    description:
-      The size of the persistent volume , e.g. 512Mi, 1Gi, 2Gi.
-    required: true
-    value: 1Gi
   # ===============================================================================
   - name: CPU_REQUEST
     displayName: Resources CPU Request
