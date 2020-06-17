@@ -7,3 +7,9 @@ vc-authn-controller:5000
 vc-authn-agent:8024
 vc-authn-database:5432
 vc-authn-wallet:5432
+devops-issuer-admin:8080
+devops-issuer-public:8080
+devops-issuer-controller:8080
+devops-issuer-db:27017
+devops-issuer-wallet:5432
+devops-issuer-agent:8024
