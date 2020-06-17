@@ -1,0 +1,49 @@
+{
+  "questions": [
+    {
+      "type": "text",
+      "name": "placeholder",
+      "defaultValue": "placeholder",
+      "readOnly": true,
+      "visibleIf": "{username} empty"
+    },
+    {
+      "type": "text",
+      "name": "username",
+      "title": "User ID:",
+      "readOnly": true,
+      "isRequired": true,
+      "visibleIf": "{username} notempty"
+    },
+    {
+      "type": "text",
+      "name": "given_name",
+      "title": "First Name:",
+      "isRequired": true
+    },
+    {
+      "type": "text",
+      "name": "family_name",
+      "title": "Last Name:",
+      "isRequired": true
+    },
+    {
+      "type": "text",
+      "name": "email",
+      "title": "E-mail:",
+      "isRequired": true,
+      "validators": [
+          {
+              "type": "email"
+          }
+      ]
+    }
+  ],
+  "triggers": [
+    {
+      "type": "runexpression",
+      "expression": "{placeholder} notempty",
+      "runExpression": "setUserID('username')"
+    }
+  ]
+}

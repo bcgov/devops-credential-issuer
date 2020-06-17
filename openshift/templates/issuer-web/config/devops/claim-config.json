@@ -1,0 +1,32 @@
+{
+  "questions": [
+    {
+      "type": "text",
+      "name": "username",
+      "title": "User ID:",
+      "readOnly": true,
+      "isRequired": true
+    },
+    {
+      "type": "text",
+      "name": "given_name",
+      "title": "First Name:",
+      "readOnly": true,
+      "isRequired": true
+    },
+    {
+      "type": "text",
+      "name": "family_name",
+      "title": "Last Name:",
+      "readOnly": true,
+      "isRequired": true
+    },
+    {
+      "type": "text",
+      "name": "email",
+      "title": "E-mail:",
+      "isRequired": true
+    }
+  ],
+  "triggers": []
+}
