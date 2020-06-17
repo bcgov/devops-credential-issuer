@@ -346,6 +346,13 @@
       "value": "admgjk-tools"
     },
     {
+      "name": "NAMESPACE_NAME",
+      "displayName": "Namespace Name",
+      "description": "The name of the namespace being deployed to..",
+      "required": true,
+      "value": "admgjk"
+    },
+    {
       "name": "SERVICE_PORT",
       "displayName": "Service Port",
       "required": true,

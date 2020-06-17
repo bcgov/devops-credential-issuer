@@ -23,13 +23,6 @@ printStatusMsg "Generating ConfigMap; ${APP_CONFIG_MAP_NAME} ..."
 generateConfigMap "${APP_CONFIG_MAP_NAME}${SUFFIX}" "${APPCONFIG_SOURCE_PATH}" "${OUTPUT_FORMAT}" "${APPCONFIG_OUTPUT_FILE}"
 
 if createOperation; then
-  # Randomly generate a set of credentials without asking ...
-  # printStatusMsg "Creating a set of random user credentials ..."
-  # writeParameter "USER_ID" $(generateUsername) "false"
-  # writeParameter "USER_PASSWORD" $(generatePassword) "false"
-  # writeParameter "ADMIN_USER_ID" $(generateUsername) "false"
-  # writeParameter "ADMIN_PASSWORD" $(generatePassword) "false"
-
   # Get the settings for delivering user feedback to the business
   readParameter "ADMIN_EMAIL - Please provide the email address to be used as sender for outgoing messages.  The default is a blank string." ADMIN_EMAIL "false"
   readParameter "SMTP_SERVER_ADDRESS - Please provide the address of the outgoing smtp server.  The default is a blank string." SMTP_SERVER_ADDRESS "false"
@@ -37,11 +30,6 @@ if createOperation; then
 else
   # Secrets are removed from the configurations during update operations ...
   printStatusMsg "Update operation detected ...Skipping the prompts for SMTP_SERVER_ADDRESS, and SMTP_SERVER_PORT environemtn variables ...\n"
-  # writeParameter "USER_ID" "generation_skipped" "false"
-  # writeParameter "USER_PASSWORD" "generation_skipped" "false"
-  # writeParameter "ADMIN_USER_ID" "generation_skipped" "false"
-  # writeParameter "ADMIN_PASSWORD" "generation_skipped" "false"
-
   writeParameter "ADMIN_EMAIL" "prompt_skipped" "false"
   writeParameter "SMTP_SERVER_ADDRESS" "prompt_skipped" "false"
   writeParameter "SMTP_SERVER_PORT" "prompt_skipped" "false"

@@ -1,0 +1,13 @@
+[
+  {
+    "attributes": [
+      "username",
+      "family_name",
+      "given_name",
+      "email",
+      "issued"
+    ],
+    "schema_name": "bcdevops-vc",
+    "schema_version": "0.1.2"
+  }
+]
