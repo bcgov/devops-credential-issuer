@@ -4,7 +4,7 @@
 # Template File: ../openshift/templates/issuer-agent/issuer-agent-deploy.yaml
 #=========================================================
 NAME=issuer-agent
-APP_NAME=issuer-kit
+APP_NAME=issuer
 APP_GROUP=issuer-kit-agent
 SUFFIX=-bcdevops
 ROLE=agent

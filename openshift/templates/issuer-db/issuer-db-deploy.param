@@ -4,7 +4,7 @@
 # Template File: ../openshift/templates/issuer-db/issuer-db-deploy.json
 #=========================================================
 NAME=issuer-db
-APP_NAME=issuer-kit
+APP_NAME=issuer
 APP_GROUP=issuer-kit-storage
 SUFFIX=-bcdevops
 ROLE=db

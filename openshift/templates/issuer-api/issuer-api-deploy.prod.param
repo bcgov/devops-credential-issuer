@@ -4,7 +4,7 @@
 # Template File: ../openshift/templates/issuer-api/issuer-api-deploy.json
 #=========================================================
 # NAME=issuer-api
-# APP_NAME=issuer-kit
+# APP_NAME=issuer
 # APP_GROUP=issuer-kit-controller
 # SUFFIX=-bcdevops
 # ROLE=controller

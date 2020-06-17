@@ -4,7 +4,7 @@
 # Template File: ../openshift/templates/issuer-admin/issuer-admin-deploy.json
 #=========================================================
 # NAME=issuer-admin
-# APP_NAME=issuer-kit
+# APP_NAME=issuer
 # APP_GROUP=issuer-kit
 # SUFFIX=-bcdevops
 # ROLE=admin-frontend
