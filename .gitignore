@@ -1,26 +1,18 @@
+tmp
+
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 *_DeploymentConfig.json
 *_BuildConfig.json
 *.crt
+*.pem
 *.key
+
 *.local.*
 
 # General
-**/*.env
+.env
 
 # Visual Studio Code
 .vscode
 .idea/*
 .vs
-
-# Node
-**/node_modules
-**/.nyc_output
-**/dist
-**/bin
-**/obj
-**/*.njsproj
-
-# Keycloak
-**/hsperfdata_jboss
-**/realm-export-docker.json
