@@ -2,7 +2,7 @@
   "env": "development",
   "issuer": {
     "name": "BC DevOps Issuer Admin",
-    "publicUrl": "https://devops-issuer-public-admgjk-dev.pathfinder.gov.bc.ca"
+    "publicUrl": "https://devops-issuer-dev.pathfinder.gov.bc.ca"
   },
   "authentication": {
     "enabled": true,
