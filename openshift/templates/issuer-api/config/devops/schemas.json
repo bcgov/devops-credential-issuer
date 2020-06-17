@@ -1,5 +1,6 @@
 [
   {
+    "default": true,
     "attributes": [
       "username",
       "family_name",
