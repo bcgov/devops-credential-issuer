@@ -2,8 +2,8 @@
 // This is used to find all of the build configurations associated to the application
 // To work the build configurations must have an "app" label;
 // - For example; app=iiw-book
-def APP_BASE_LABEL = 'issuer-kit-base'
-def APP_LABEL = 'issuer-kit'
+def APP_BASE_LABEL = 'issuer-kit-base-image'
+def APP_LABEL = 'issuer-kit-runtime'
 
 // Wait timeout in minutes
 def WAIT_TIMEOUT = 10
@@ -40,8 +40,8 @@ node {
         openshift.withProject() {
           
           // Find all of the build configurations associated to the application using labels ...
-          def buildconfigs = openshift.selector("bc", [ app : "${APP_BASE_LABEL}" ])
-          echo "Found ${buildconfigs.count()} buildconfigs for app label (app=${APP_BASE_LABEL}): ${buildconfigs.names()}"
+          def buildconfigs = openshift.selector("bc", [ "app-group" : "${APP_BASE_LABEL}" ])
+          echo "Found ${buildconfigs.count()} buildconfigs for app label (app-group=${APP_BASE_LABEL}): ${buildconfigs.names()}"
 
           // Kick off all the builds in parallel ...
           def builds = buildconfigs.startBuild()
@@ -73,8 +73,8 @@ node {
         openshift.withProject() {
 
           // Find all of the build configurations associated to the application using labels ...
-          def buildconfigs = openshift.selector("bc", [ app : "${APP_LABEL}" ])
-          echo "Found ${buildconfigs.count()} buildconfigs for app label (app=${APP_LABEL}): ${buildconfigs.names()}"
+          def buildconfigs = openshift.selector("bc", [ "app-group" : "${APP_LABEL}" ])
+          echo "Found ${buildconfigs.count()} buildconfigs for app label (app-group=${APP_LABEL}): ${buildconfigs.names()}"
 
           // Kick off all the builds in parallel ...
           def builds = buildconfigs.startBuild()
