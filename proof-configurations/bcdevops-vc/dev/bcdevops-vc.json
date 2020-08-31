@@ -3,7 +3,7 @@
   "subject_identifier": "username",
   "configuration": {
     "name": "BC Devops Credential",
-    "version": "0.1.2",
+    "version": "0.2.1",
     "requested_attributes": [
       {
         "name": "username",
@@ -11,7 +11,7 @@
         "restrictions": [
           {
             "schema_name": "bcdevops-vc",
-            "schema_version": "0.1.2",
+            "schema_version": "0.2.1",
             "issuer_did": "FoNBBJvTnNZxy2T1Mo8eFL"
           }
         ]
@@ -22,7 +22,7 @@
         "restrictions": [
           {
             "schema_name": "bcdevops-vc",
-            "schema_version": "0.1.2",
+            "schema_version": "0.2.1",
             "issuer_did": "FoNBBJvTnNZxy2T1Mo8eFL"
           }
         ]
@@ -33,7 +33,7 @@
         "restrictions": [
           {
             "schema_name": "bcdevops-vc",
-            "schema_version": "0.1.2",
+            "schema_version": "0.2.1",
             "issuer_did": "FoNBBJvTnNZxy2T1Mo8eFL"
           }
         ]
@@ -44,7 +44,7 @@
         "restrictions": [
           {
             "schema_name": "bcdevops-vc",
-            "schema_version": "0.1.2",
+            "schema_version": "0.2.1",
             "issuer_did": "FoNBBJvTnNZxy2T1Mo8eFL"
           }
         ]
