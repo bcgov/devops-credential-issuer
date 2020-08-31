@@ -1,6 +1,5 @@
 [
   {
-    "default": true,
     "attributes": [
       "username",
       "family_name",
@@ -9,6 +8,8 @@
       "issued"
     ],
     "schema_name": "bcdevops-vc",
-    "schema_version": "0.1.2"
+    "schema_version": "0.2.0",
+    "revocable": true,
+    "default": true
   }
 ]
