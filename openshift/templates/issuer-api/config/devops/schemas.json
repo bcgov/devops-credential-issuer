@@ -4,11 +4,10 @@
       "username",
       "family_name",
       "given_name",
-      "email",
-      "issued"
+      "email"
     ],
     "schema_name": "bcdevops-vc",
-    "schema_version": "0.2.0",
+    "schema_version": "0.2.1",
     "revocable": true,
     "default": true
   }
