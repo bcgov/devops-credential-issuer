@@ -7,7 +7,7 @@
       "email"
     ],
     "schema_name": "bcdevops-vc",
-    "schema_version": "0.2.1",
+    "schema_version": "0.2.3",
     "revocable": true,
     "default": true
   }
