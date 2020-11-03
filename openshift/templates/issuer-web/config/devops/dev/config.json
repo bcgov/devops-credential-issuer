@@ -7,7 +7,7 @@
   "authentication": {
     "enabled": false,
     "oidcSettings": {
-      "authority": "https://sso-dev.pathfinder.gov.bc.ca/auth/realms/devops-vc",
+      "authority": "https://dev.oidc.pathfinder.gov.bc.ca/auth/realms/devops-vc",
       "clientId": "devops_vc",
       "redirectUri": "https://bcdevops-issuer-dev.pathfinder.gov.bc.ca/oidc-callback",
       "redirect_uri": "https://bcdevops-issuer-dev.pathfinder.gov.bc.ca/oidc-callback-error",
@@ -25,7 +25,7 @@
     "successText": "You can now access the following resource(s) using your Verifiable Credential:",
     "links": [
       {
-        "url": "https://sso-dev.pathfinder.gov.bc.ca/auth",
+        "url": "https://dev.oidc.pathfinder.gov.bc.ca/auth",
         "description": "Keycloak Console (DEV)"
       }
     ]

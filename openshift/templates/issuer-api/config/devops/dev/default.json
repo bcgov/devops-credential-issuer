@@ -37,5 +37,11 @@
     "offerComment": "Credential offer from BC DevOps Issuer Test",
     "validityDays": -1,
     "multiUse": false
+  },
+  "authentication": {
+    "jwksUri": "https://dev.oidc.pathfinder.gov.bc.ca/auth/realms/devops-vc/protocol/openid-connect/certs",
+    "algorithms": [
+      "RS256"
+    ]
   }
 }
