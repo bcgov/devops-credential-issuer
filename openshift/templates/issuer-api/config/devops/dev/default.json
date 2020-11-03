@@ -39,7 +39,7 @@
     "multiUse": false
   },
   "authentication": {
-    "jwksUri": "https://dev.oidc.pathfinder.gov.bc.ca/auth/realms/devops-vc/protocol/openid-connect/certs",
+    "jwksUri": "https://dev.oidc.gov.bc.ca/auth/realms/devops-vc/protocol/openid-connect/certs",
     "algorithms": [
       "RS256"
     ]
